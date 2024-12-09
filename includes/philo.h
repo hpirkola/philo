@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 14:42:57 by hpirkola          #+#    #+#             */
-/*   Updated: 2024/12/09 16:00:38 by hpirkola         ###   ########.fr       */
+/*   Updated: 2024/12/09 22:07:44 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@ typedef struct s_philo
     size_t  time_to_sleep;
     pthread_mutex_t *right_fork;
     pthread_mutex_t *left_fork;
-    
-    //mutexes here??
+    pthread_mutex_t *death;
+    pthread_mutex_t *print;
+    //time since started eating???
 }   t_philo;
 
 typedef struct s_all
@@ -38,10 +39,18 @@ typedef struct s_all
     int num_of_philos;
     int dead;
     int must_eat;
+    pthread_mutex_t *death;
     //mutexes here???
 }   t_all;
 
+//main.c
+void    free_destroy_all(t_all *a);
+
 //threads.c
-int create_threads();
-void    join_threads();
+int create_threads(t_all *a);
+void    join_threads(t_all *a);
+
+//activities.c
+void   *eat_sleep_think();
+
 #endif

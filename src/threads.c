@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 15:28:52 by hpirkola          #+#    #+#             */
-/*   Updated: 2024/12/09 15:36:23 by hpirkola         ###   ########.fr       */
+/*   Updated: 2024/12/09 22:08:09 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,39 @@
 
 int create_threads(t_all *a)
 {
-    (void)a;
+    int i;
+    int j;
+    
+    i = 0;
+    while (i < a->num_of_philos)
+    {
+        if (pthread_create(&a->philos[i].thread, NULL, eat_sleep_think(), (void *)&a->philos[i]) != 0)
+        {
+            //creating thread failed
+            pthread_mutex_lock(a->death);
+            a->dead = 1;
+            pthread_mutex_unlock(a->death);
+            j = 0;
+            while (j <= i)
+            {
+                pthread_join(a->philos[j].thread, NULL);
+                j++;
+            }
+            free_destroy_all(a);
+            return (0);
+        }
+    }
     return (1);    
 }
 
-void    join_threads()
+void    join_threads(t_all *a)
 {
-    return ;
+    int i;
+
+    i = 0;
+    while (i < a->num_of_philos)
+    {
+        pthread_join(a->philos[i].thread, NULL);
+        i++;
+    }
 }
