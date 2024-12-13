@@ -23,6 +23,7 @@ int init_mutexes(t_all *a)
     while (i < a->num_of_philos)
     {
         pthread_mutex_init(&a->forks[i], NULL);
+        pthread_mutex_init(&a->philos[i].eaten, NULL);
         i++;
     }
     return (1);    
@@ -41,10 +42,11 @@ void    initialize(t_all *a, char **argv)
     while (i < a->num_of_philos)
     {
         a->philos[i].id = i + 1;
+        a->philos[i].num_of_philos = a->num_of_philos;
         a->philos[i].time_to_die = atoi(argv[2]); // CHANGE TO FT_ATOI
         a->philos[i].time_to_eat = atoi(argv[3]); // CHANGE TO FT_ATOI
         a->philos[i].time_to_sleep = atoi(argv[4]); // CHANGE TO FT_ATOI
-        a->philos[i].dead = 0;
+        a->philos[i].dead = &a->dead;
         a->philos[i].times_eaten = 0;
         a->philos[i].left_fork = &a->forks[i];
         if (i + 1 < a->num_of_philos)

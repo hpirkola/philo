@@ -20,6 +20,7 @@ int create_threads(t_all *a)
     i = 0;
     while (i < a->num_of_philos)
     {
+        a->philos[i].started_eating = get_time();
         if (pthread_create(&a->philos[i].thread, NULL, eat_sleep_think, (void *)&a->philos[i]) != 0)
         {
             //creating thread failed

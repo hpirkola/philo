@@ -37,10 +37,14 @@ int someone_is_dead(t_all *a)
     {
         if (get_time() - a->philos[i].started_eating >= a->philos[i].time_to_die)
         {
+            
             pthread_mutex_lock(&a->death);
+            //printf("started eating %ld, get time %ld, time to die %ld\n", a->philos[i].started_eating, get_time(), a->philos[i].time_to_die);
             a->dead = 1;
+            pthread_mutex_lock(a->philos[i].print);
+            printf("%lu %d died\n", get_time(), a->philos[i].id);
+            pthread_mutex_unlock(a->philos[i].print);
             pthread_mutex_unlock(&a->death);
-            print_state(&a->philos[i], "died");
             return (1);
         }
         i++;
@@ -57,10 +61,18 @@ int all_have_eaten(t_all *a)
         return (0);
     while (i < a->num_of_philos)
     {
+        pthread_mutex_lock(&a->philos[i].eaten);
         if (a->philos[i].times_eaten < a->must_eat)
+        {
+            pthread_mutex_unlock(&a->philos[i].eaten);
             return (0);
+        }
+        pthread_mutex_unlock(&a->philos[i].eaten);
         i++;
     }
+    pthread_mutex_lock(&a->death);
+    a->dead = 1;
+    pthread_mutex_unlock(&a->death);
     return (1);
 }
 
