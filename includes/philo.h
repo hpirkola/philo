@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 14:42:57 by hpirkola          #+#    #+#             */
-/*   Updated: 2024/12/11 14:21:26 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/01/30 10:54:57 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,5 +66,8 @@ void			join_threads(t_all *a);
 void			*eat_sleep_think(void *p);
 void			print_state(t_philo *philo, char *str);
 unsigned long	get_time(void);
+
+//ft_atoi.c
+int				ft_atoi(const char *str);
 
 #endif

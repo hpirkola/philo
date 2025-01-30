@@ -6,96 +6,95 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 11:22:19 by hpirkola          #+#    #+#             */
-/*   Updated: 2024/12/10 14:23:13 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/01/30 13:32:41 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void    free_destroy_all(t_all *a)
+void	free_destroy_all(t_all *a)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < a->num_of_philos)
-    {
-        pthread_mutex_destroy(a->philos[i].left_fork);
-        pthread_mutex_destroy(a->philos[i].right_fork);
-        pthread_mutex_destroy(a->philos[i].death);
-        pthread_mutex_destroy(a->philos[i].print);
-        i++;
-    }
-    free(a->philos);
+	i = 0;
+	pthread_mutex_destroy(&a->death);
+	pthread_mutex_destroy(&a->print);
+	while (i < a->num_of_philos)
+	{
+		pthread_mutex_destroy(&a->forks[i]);
+		pthread_mutex_destroy(&a->philos[i].eaten);
+		i++;
+	}
+	free(a->philos);
 }
 
-int someone_is_dead(t_all *a)
+int	someone_is_dead(t_all *a)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < a->num_of_philos)
-    {
-        if (get_time() - a->philos[i].started_eating >= a->philos[i].time_to_die)
-        {
-            
-            pthread_mutex_lock(&a->death);
-            //printf("started eating %ld, get time %ld, time to die %ld\n", a->philos[i].started_eating, get_time(), a->philos[i].time_to_die);
-            a->dead = 1;
-            pthread_mutex_lock(a->philos[i].print);
-            printf("%lu %d died\n", get_time(), a->philos[i].id);
-            pthread_mutex_unlock(a->philos[i].print);
-            pthread_mutex_unlock(&a->death);
-            return (1);
-        }
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (i < a->num_of_philos)
+	{
+		if (get_time() - a->philos[i].started_eating >= \
+				a->philos[i].time_to_die)
+		{
+			pthread_mutex_lock(a->philos[i].death);
+			a->dead = 1;
+			pthread_mutex_lock(a->philos[i].print);
+			printf("%lu %d died\n", get_time(), a->philos[i].id);
+			pthread_mutex_unlock(a->philos[i].print);
+			pthread_mutex_unlock(a->philos[i].death);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
 }
 
-int all_have_eaten(t_all *a)
+int	all_have_eaten(t_all *a)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    if (a->must_eat == 0)
-        return (0);
-    while (i < a->num_of_philos)
-    {
-        pthread_mutex_lock(&a->philos[i].eaten);
-        if (a->philos[i].times_eaten < a->must_eat)
-        {
-            pthread_mutex_unlock(&a->philos[i].eaten);
-            return (0);
-        }
-        pthread_mutex_unlock(&a->philos[i].eaten);
-        i++;
-    }
-    pthread_mutex_lock(&a->death);
-    a->dead = 1;
-    pthread_mutex_unlock(&a->death);
-    return (1);
+	i = 0;
+	if (a->must_eat == 0)
+		return (0);
+	while (i < a->num_of_philos)
+	{
+		pthread_mutex_lock(&a->philos[i].eaten);
+		if (a->philos[i].times_eaten < a->must_eat)
+		{
+			pthread_mutex_unlock(&a->philos[i].eaten);
+			return (0);
+		}
+		pthread_mutex_unlock(&a->philos[i].eaten);
+		i++;
+	}
+	pthread_mutex_lock(&a->death);
+	a->dead = 1;
+	pthread_mutex_unlock(&a->death);
+	return (1);
 }
 
-void    monitor(t_all *a)
+void	monitor(t_all *a)
 {
-    while (1)
-    {
-        if (someone_is_dead(a))
-            return ;
-        if (all_have_eaten(a))
-            return ;
-    }
+	while (1)
+	{
+		if (someone_is_dead(a))
+			return ;
+		if (all_have_eaten(a))
+			return ;
+	}
 }
 
-int    philo(t_all *a)
+int	philo(t_all *a)
 {
-    if (!create_threads(a))
-    {
-        write(2, "Creating threads failed\n", 24);
-        return (0);
-    }
-    monitor(a);
-    join_threads(a);
-    free_destroy_all(a);
-    return (1);
+	if (!create_threads(a))
+	{
+		write(2, "Creating threads failed\n", 24);
+		return (0);
+	}
+	monitor(a);
+	join_threads(a);
+	free_destroy_all(a);
+	return (1);
 }

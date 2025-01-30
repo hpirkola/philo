@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 14:02:48 by hpirkola          #+#    #+#             */
-/*   Updated: 2024/12/11 14:29:22 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/01/30 11:10:45 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,16 @@ int	check_input(int argc, char **argv)
 
 	if (argc < 5 || argc > 6)
 		return (0);
-	//check if every argument is numeric with ft_atoi
 	i = 0;
 	while (argv[++i])
 	{
-		if (atoi(argv[i]) == 0) //CHANGE TO FT_ATOI!!!
+		if (ft_atoi(argv[i]) == 0)
 		{
 			if (i != 5 || (i == 5 && argv[i][0] != '0'))
 				return (0);
 		}
 	}
-	//check that the amount of philos is max 200
-	if (atoi(argv[1]) > 200) //CHANGE TO FT_ATOI!!!
+	if (ft_atoi(argv[1]) > 200)
 		return (0);
 	return (1);
 }
@@ -52,7 +50,7 @@ int	main(int argc, char **argv)
 		write(2, "Invalid input\n", 14);
 		return (1);
 	}
-	table.num_of_philos = atoi(argv[1]); //CHANGE TO FT_ATOI !!!
+	table.num_of_philos = ft_atoi(argv[1]);
 	if (!allocation(&table))
 	{
 		write(2, "Allocation fail\n", 16);
@@ -60,7 +58,8 @@ int	main(int argc, char **argv)
 	}
 	if (!init_mutexes(&table))
 	{
-		//free allocated variables
+		free(table.philos);
+		free(table.forks);
 		write(2, "Mutex creation fail\n", 20);
 		return (1);
 	}
