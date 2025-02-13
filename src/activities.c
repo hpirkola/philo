@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 21:11:21 by hpirkola          #+#    #+#             */
-/*   Updated: 2025/01/30 11:05:53 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/02/13 15:14:37 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ static void	unlock_forks(t_philo *philo)
 	pthread_mutex_unlock(philo->right_fork);
 }
 
-int	eat(t_philo *philo)
+static int	eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
-	print_state(philo, "has taken a fork");
+	print_state(philo, "has taken a fork", GREEN);
 	pthread_mutex_lock(philo->death);
 	if (*(philo->dead))
 	{
@@ -31,12 +31,14 @@ int	eat(t_philo *philo)
 	}
 	pthread_mutex_unlock(philo->death);
 	pthread_mutex_lock(philo->right_fork);
-	print_state(philo, "has taken a fork");
+	print_state(philo, "has taken a fork", GREEN);
 	pthread_mutex_lock(&philo->eaten);
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->eaten);
+	pthread_mutex_lock(&philo->started);
 	philo->started_eating = get_time();
-	print_state(philo, "is eating");
+	pthread_mutex_unlock(&philo->started);
+	print_state(philo, "is eating", YELLOW);
 	if (!doing_stuff(philo, philo->time_to_eat))
 		return (unlock_forks(philo), 0);
 	unlock_forks(philo);
@@ -62,7 +64,7 @@ int	doing_stuff(t_philo *philo, int n)
 	return (1);
 }
 
-void	one_philo(t_philo *philo)
+static void	one_philo(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
 	pthread_mutex_lock(philo->death);
@@ -82,15 +84,16 @@ void	*eat_sleep_think(void *p)
 		return (NULL);
 	}
 	if (philo->id % 2 == 0 || philo->id == philo->num_of_philos)
-		usleep(philo->time_to_eat / 2);
-	while (!*philo->dead)
+		usleep(philo->time_to_eat / 2); //should they sleep random amount??
+	while (!get_death(philo))
 	{
-		print_state(philo, "is thinking");
+		print_state(philo, "is thinking", PURPLE);
 		if (!eat(philo))
 			break ;
-		print_state(philo, "is sleeping");
+		print_state(philo, "is sleeping", BLUE);
 		if (!doing_stuff(philo, philo->time_to_sleep))
 			break ;
+		//usleep random amount??
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 11:22:19 by hpirkola          #+#    #+#             */
-/*   Updated: 2025/01/30 13:32:41 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/02/13 15:03:11 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,21 @@ int	someone_is_dead(t_all *a)
 	i = 0;
 	while (i < a->num_of_philos)
 	{
+		pthread_mutex_lock(&a->philos[i].started);
 		if (get_time() - a->philos[i].started_eating >= \
 				a->philos[i].time_to_die)
 		{
+			pthread_mutex_unlock(&a->philos[i].started);
 			pthread_mutex_lock(a->philos[i].death);
 			a->dead = 1;
-			pthread_mutex_lock(a->philos[i].print);
-			printf("%lu %d died\n", get_time(), a->philos[i].id);
-			pthread_mutex_unlock(a->philos[i].print);
 			pthread_mutex_unlock(a->philos[i].death);
+			pthread_mutex_lock(a->philos[i].print);
+			printf(RED"%lu %d died\n"RESET, get_time() - a->start, a->philos[i].id);
+			pthread_mutex_unlock(a->philos[i].print);
 			return (1);
 		}
+		else
+			pthread_mutex_unlock(&a->philos[i].started);
 		i++;
 	}
 	return (0);

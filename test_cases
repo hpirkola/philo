@@ -8,10 +8,43 @@
 199 610 200 200 10
 130 410 200 200 10
 
+131 610 200 100 10
+131 601 200 200 10
+199 610 200 200 10
+199 601 200 200 10
+50 401 200 200 10 !!!!!!!!!
+198 410 200 100 10
+198 401 200 200 10 !!!!!!!!!!!!!
+
+
+//latest
+31 610 200 200 10 (shouldn't die, 10th test one died)
+31 601 200 200 10 (shouldn't die, 6th test one died)
+131 610 200 200 10 (shouldn't die, 1st test one did)
+50 401 200 200 10 (shouldn't die, all failed)
+130 410 200 200 10 (shouldn't die, 5th test failed)
+130 401 200 200 10 (should't die, all failed, no 1 died everytime)
+198 410 200 200 10 (shouldn't die, 6th test failed)
+198 401 200 200 10 (shouldn't die, all failed, no 1 died everytime) //worked when i tried myself
+
+31 600 200 200 10 (should die, 2nd, 3rd, 4th, 6th and 7th test failed)
+131 599 200 200 10 (should die, all failed)
+131 600 200 200 10 (should die, all failed)
+199 599 200 200 10 (should die, all failed)
+199 600 200 200 10 (should die, all but 9th failed)
+
 //should die but don't
 31 600 200 200 10
 131 599 200 200 10
 131 600 200 200 10
 199 599 200 200 10
+
+31 600 200 200 10
+131 599 200 200 10 !!!!!!!!!!
+131 600 200 200 10 !!!!!!!!!!!!
+199 596 200 200 10
+199 599 200 200 10 !!!!!!!!!!
+199 600 200 200 10 !!!!!!!!!!
+198 400 200 200 10
 199 599 200 200 10
 199 600 200 200 10
