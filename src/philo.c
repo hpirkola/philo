@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 11:22:19 by hpirkola          #+#    #+#             */
-/*   Updated: 2025/02/13 15:03:11 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:20:24 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int	someone_is_dead(t_all *a)
 			a->dead = 1;
 			pthread_mutex_unlock(a->philos[i].death);
 			pthread_mutex_lock(a->philos[i].print);
-			printf(RED"%lu %d died\n"RESET, get_time() - a->start, a->philos[i].id);
+			printf(RED);
+			printf("%lu %d died\n"RESET, get_time() - a->start, a->philos[i].id);
 			pthread_mutex_unlock(a->philos[i].print);
 			return (1);
 		}

@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 11:29:17 by hpirkola          #+#    #+#             */
-/*   Updated: 2025/02/13 15:00:34 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:20:12 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,17 +55,22 @@ int	init_mutexes(t_all *a)
 	return (1);
 }
 
-void	initialize(t_all *a, char **argv)
+static void	init_a(t_all *a, char **argv)
 {
-	int	i;
-
 	a->dead = 0;
 	if (argv[5])
 		a->must_eat = ft_atoi(argv[5]);
 	else
 		a->must_eat = 0;
+	a->start = get_time();
+}
+
+void	initialize(t_all *a, char **argv)
+{
+	int	i;
+
+	init_a(a, argv);
 	i = -1;
-	a->start =  get_time();
 	while (++i < a->num_of_philos)
 	{
 		a->philos[i].id = i + 1;

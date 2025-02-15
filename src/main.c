@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 14:02:48 by hpirkola          #+#    #+#             */
-/*   Updated: 2025/01/30 11:10:45 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:20:05 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,7 @@ int	check_input(int argc, char **argv)
 	while (argv[++i])
 	{
 		if (ft_atoi(argv[i]) == 0)
-		{
-			if (i != 5 || (i == 5 && argv[i][0] != '0'))
-				return (0);
-		}
+			return (0);
 	}
 	if (ft_atoi(argv[1]) > 200)
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: hpirkola <hpirkola@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 21:11:21 by hpirkola          #+#    #+#             */
-/*   Updated: 2025/02/13 15:14:37 by hpirkola         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:12:11 by hpirkola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,17 @@ static void	one_philo(t_philo *philo)
 
 void	*eat_sleep_think(void *p)
 {
-	t_philo	*philo;
+	t_philo			*philo;
+	struct timeval	time;
 
 	philo = (t_philo *) p;
 	if (philo->num_of_philos == 1)
-	{
-		one_philo(philo);
-		return (NULL);
-	}
+		return (one_philo(philo), NULL);
 	if (philo->id % 2 == 0 || philo->id == philo->num_of_philos)
-		usleep(philo->time_to_eat / 2); //should they sleep random amount??
+	{
+		gettimeofday(&time, NULL);
+		usleep((time.tv_usec % 3000) + 1000);
+	}
 	while (!get_death(philo))
 	{
 		print_state(philo, "is thinking", PURPLE);
@@ -93,7 +94,8 @@ void	*eat_sleep_think(void *p)
 		print_state(philo, "is sleeping", BLUE);
 		if (!doing_stuff(philo, philo->time_to_sleep))
 			break ;
-		//usleep random amount??
+		gettimeofday(&time, NULL);
+		usleep((time.tv_usec % 3000) + 1000);
 	}
 	return (NULL);
 }
